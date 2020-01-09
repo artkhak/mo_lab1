@@ -8,14 +8,17 @@ def f(x):
     """
     Заданая функция.
     :param x: Аргумент функции.
-    :return: Значение вункции.
+    :return: Значение функции.
     """
     return 1 / 4 * x ** 4 + x ** 2 - 8 * x + 12
 
 
 interval = [0, 2]
 calculation_data = CalculationData()
-x_min = powell(f, interval, interval[0], 0.1, 0.00001, 0.00001, calculation_data)
+ex = 0.00001
+ef = 0.00001
+delta = 0.1
+x_min = powell(f, interval, interval[0], delta, ex, ef, calculation_data)
 print(x_min)
 
 f_min = f(x_min)
@@ -52,3 +55,5 @@ plt.xlim(0, 2)
 plt.ylim(0, 12)
 
 plt.show()
+
+print(f'{calculation_data.iteration_count}')
