@@ -5,6 +5,7 @@ class CalculationData:
     """
     Класс для сбора данных расчета.
     """
+
     def __init__(self):
         """
         Конструктор.

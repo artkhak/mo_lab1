@@ -121,3 +121,109 @@ def powell_recursive(function, interval, x1, x2, x3, delta, ex, ef, calculation_
 
     # Возвращаем точку минимума, полученную в следующией итерации.
     return powell_recursive(function, interval, x1, x2, x3, delta, ex, ef, calculation_data)
+
+
+class CalculationData:
+    """
+    Класс для сбора данных расчета.
+    """
+
+    def __init__(self):
+        """
+        Конструктор.
+        """
+        self.iteration_count = 0
+        self.function_call_count = 0
+        self.alpha_calculator = AlphaCalculator()
+
+    def add_iteration(self):
+        """
+        Добавляет итерацию.
+        """
+        self.iteration_count += 1
+
+    def add_function_call(self):
+        """
+        Добавляет вызов функции.
+        """
+        self.function_call_count += 1
+
+
+def f(x):
+    """
+    Заданая функция.
+    :param x: Аргумент функции.
+    :return: Значение функции.
+    """
+    return 1 / 4 * x ** 4 + x ** 2 - 8 * x + 12
+
+
+class AlphaCalculator:
+    """
+    Класс для расчета коэффициента сходимости.
+    """
+
+    def __init__(self):
+        """
+        Конструктор.
+        """
+        self.x_k = None
+        self.x_k1 = None
+        self.x_k2 = None
+
+    def new_x(self, x):
+        """
+        Добавляет новое значение x.
+        """
+        [self.x_k, self.x_k1, self.x_k2] = [self.x_k1, self.x_k2, x]
+
+    def alpha(self):
+        """
+        Коэффициент сходимости.
+        """
+        if self.x_k is None or self.x_k1 is None or self.x_k2 is None:
+            return None
+
+        return abs(self.x_k1 - self.x_k2) / abs(self.x_k - self.x_k1)
+
+
+import matplotlib.pyplot as plt
+
+interval = [0, 2]
+calculation_data = CalculationData()
+ex = 0.00001
+ef = 0.00001
+delta = 0.1
+x_min = powell(f, interval, interval[0], delta, ex, ef, calculation_data)
+f_min = f(x_min)
+
+# Вывод графика
+xs = [i / 1000 for i in range(0, 2000, 1)]
+ys = [f(x) for x in xs]
+
+
+plt.plot(xs, ys, 'b-', label='ЦФ')
+plt.scatter(x_min, f_min, marker='x', c='r', s=100, label='Точка оптимума')
+
+plt.ylabel("y")
+plt.xlabel("x")
+plt.grid(True)
+
+x_ticks = [i / 10 for i in range(0, 22, 1)]
+plt.xticks(x_ticks)
+plt.xlim(0, 2)
+
+y_ticks = [i / 10 for i in range(0, 130, 10)]
+plt.yticks(y_ticks)
+plt.ylim(0, 12)
+
+plt.legend()
+
+plt.show()
+
+# Вывод выходных данных
+print(f'Точка оптимума - {x_min}')
+print(f'Оптимальное значение ЦФ - {f_min}')
+print(f'Количество итераций - {calculation_data.iteration_count}')
+print(f'Количество вычислений функции - {calculation_data.function_call_count}')
+print(f'Коэффициент сходимости - {calculation_data.alpha_calculator.alpha()}')
